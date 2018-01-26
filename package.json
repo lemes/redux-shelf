@@ -1,0 +1,12 @@
+{
+  "name": "redux-shelf",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "https://github.com/lemes/redux-shelf.git",
+  "authors": [
+    "Vinícius Lemes (https://github.com/lemes)",
+    "Guilherme Popolin (https://github.com/guilhermespopolin)"
+  ],
+  "license": "MIT",
+  "private": false
+}
