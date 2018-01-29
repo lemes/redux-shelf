@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
+    "format": "prettier --write {src,test}/**/*.js",
+    "precommit": "pretty-quick --staged",
     "test": "cross-env BABEL_ENV=commonjs jest"
   },
   "repository": "https://github.com/lemes/redux-shelf.git",
@@ -29,6 +31,9 @@
     "eslint-plugin-jest": "^21.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.1",
-    "jest": "^22.1.4"
+    "husky": "^0.14.3",
+    "jest": "^22.1.4",
+    "prettier": "^1.10.2",
+    "pretty-quick": "^1.2.3"
   }
 }
