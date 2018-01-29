@@ -5,7 +5,9 @@
   "scripts": {
     "format": "prettier --write {src,test}/**/*.js",
     "precommit": "pretty-quick --staged",
-    "test": "cross-env BABEL_ENV=commonjs jest"
+    "test": "cross-env BABEL_ENV=commonjs jest",
+    "eslint-check":
+      "eslint --print-config .eslintrc | eslint-config-prettier-check"
   },
   "repository": "https://github.com/lemes/redux-shelf.git",
   "authors": [
