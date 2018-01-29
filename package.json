@@ -7,7 +7,16 @@
     "precommit": "pretty-quick --staged",
     "test": "cross-env BABEL_ENV=commonjs jest",
     "eslint-check":
-      "eslint --print-config .eslintrc | eslint-config-prettier-check"
+      "eslint --print-config .eslintrc | eslint-config-prettier-check",
+    "build:commonjs": " cross-env NODE_ENV=cjs rollup -c -o lib/redux-shelf.js",
+    "build:es":
+      "cross-env BABEL_ENV=es NODE_ENV=es rollup -c -o es/redux-shelf.js",
+    "build:umd":
+      "cross-env BABEL_ENV=es NODE_ENV=development rollup -c -o dist/redux-shelf.js",
+    "build:umd:min":
+      "cross-env BABEL_ENV=es NODE_ENV=production rollup -c -o dist/redux-shelf.min.js",
+    "build":
+      "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min"
   },
   "repository": "https://github.com/lemes/redux-shelf.git",
   "authors": [
@@ -21,7 +30,6 @@
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
     "babel-jest": "^22.1.0",
-    "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
@@ -36,6 +44,9 @@
     "husky": "^0.14.3",
     "jest": "^22.1.4",
     "prettier": "^1.10.2",
-    "pretty-quick": "^1.2.3"
+    "pretty-quick": "^1.2.3",
+    "rollup": "^0.55.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-uglify": "^3.0.0"
   }
 }
