@@ -1,10 +1,5 @@
-import { entries } from './utils';
-
-const methods = {
-  REMOVE: 'REMOVE',
-  SET: 'SET',
-  UPDATE: 'UPDATE',
-};
+import { methods } from './constants';
+import content from './content';
 
 function generateActionType(type, method) {
   return `entities/${type}/${method}`;
@@ -13,7 +8,7 @@ function generateActionType(type, method) {
 function generateActionByMethod(method) {
   return (type, payload) => ({
     type: generateActionType(type, method),
-    meta: { method },
+    meta: { method, type },
     payload,
   });
 }
@@ -34,44 +29,24 @@ export const set = generateActionByMethod(methods.SET);
 export const update = generateActionByMethod(methods.UPDATE);
 
 export default function entities(state = {}, action) {
-  if (!action.type.startsWith('entities')) {
+  if (
+    !action.type.startsWith('entities') ||
+    !(action.meta && action.meta.type)
+  ) {
     return state;
   }
 
-  switch (action.meta.method) {
-    case methods.REMOVE: {
-      const entity = state[action.meta.type];
+  const currentCotent = state[action.meta.type];
+  const newContent = content(currentCotent, action);
 
-      if (!entity[action.meta.selector]) {
-        return state;
-      }
-
-      const { [action.meta.selector]: omit, ...rest } = entity;
-      return {
-        ...state,
-        [action.meta.type]: rest,
-      };
-    }
-
-    case methods.SET:
-      return {
-        ...state,
-        ...action.payload,
-      };
-
-    case methods.UPDATE:
-      return entries(action.payload).reduce(
-        (acc, [key, entity]) => ({
-          ...acc,
-          [key]: {
-            ...acc[key],
-            ...entity,
-          },
-        }),
-        state,
-      );
-
-    default:
-      return state;
+  if (currentCotent === newContent) {
+    return state;
   }
+
+  return {
+    ...state,
+    [action.meta.type]: {
+      content: newContent,
+    },
+  };
 }

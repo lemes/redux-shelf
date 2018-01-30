@@ -8,14 +8,16 @@ describe('entities', () => {
 
   beforeEach(() => {
     currentState = {
-      products: { 1: { name: 'Milk' } },
+      products: { content: { 1: { name: 'Milk' } } },
       users: {
-        2: { name: 'Lisa Silva' },
-        3: { name: 'Marcus Paiva' },
+        content: {
+          2: { name: 'Lisa Silva' },
+          3: { name: 'Marcus Paiva' },
+        },
       },
     };
     payload = {
-      users: {
+      content: {
         1: { name: 'Joe Bars' },
         2: { name: 'Lisa Lemes' },
       },
@@ -51,29 +53,6 @@ describe('entities', () => {
         expect(action.meta.type).toBe('users');
       });
     });
-
-    describe('reducer', () => {
-      beforeEach(() => {
-        state = entities(currentState, action);
-      });
-
-      it('should remove entity', () => {
-        const { [`${userIdDeleted}`]: omit, ...rest } = currentState.users;
-        expect(state.users).toEqual(rest);
-      });
-
-      it('should not update other entities on state', () => {
-        expect(state.products).toBe(currentState.products);
-      });
-
-      describe('given a not found selector', () => {
-        it('should return keep state unchanged', () => {
-          expect(
-            entities(currentState, actions.remove('users', 'not-found-user')),
-          ).toBe(currentState);
-        });
-      });
-    });
   });
 
   describe('when setting an entity', () => {
@@ -93,19 +72,9 @@ describe('entities', () => {
       it('should return meta method SET', () => {
         expect(action.meta.method).toBe('SET');
       });
-    });
 
-    describe('reducer', () => {
-      beforeEach(() => {
-        state = entities(currentState, action);
-      });
-
-      it('should replace current state', () => {
-        expect(state.users).toEqual(payload.users);
-      });
-
-      it('should not update other entities on state', () => {
-        expect(state.products).toBe(currentState.products);
+      it('should return meta type users', () => {
+        expect(action.meta.type).toBe('users');
       });
     });
   });
@@ -127,22 +96,9 @@ describe('entities', () => {
       it('should return meta method UPDATE', () => {
         expect(action.meta.method).toBe('UPDATE');
       });
-    });
 
-    describe('reducer', () => {
-      beforeEach(() => {
-        state = entities(currentState, action);
-      });
-
-      it('should update current state', () => {
-        expect(state.users).toEqual({
-          ...currentState.users,
-          ...payload.users,
-        });
-      });
-
-      it('should not update other entities on state', () => {
-        expect(state.products).toBe(currentState.products);
+      it('should return meta type users', () => {
+        expect(action.meta.type).toBe('users');
       });
     });
   });
@@ -155,20 +111,66 @@ describe('entities', () => {
 
   describe('given an unhandled action', () => {
     it('should keep state unchanged', () => {
-      expect(entities(currentState, { type: 'NOT_HANDLED' })).toBe(
+      expect(
+        entities(currentState, {
+          type: 'NOT_HANDLED',
+          meta: { type: 'users', method: 'UPDATE' },
+        }),
+      ).toBe(currentState);
+    });
+  });
+
+  describe('given an unhandled action without meta', () => {
+    it('should keep state unchanged', () => {
+      expect(entities(currentState, { type: 'entities/users/UPDATE' })).toBe(
         currentState,
       );
     });
   });
 
+  describe('given an unhandled action without meta type', () => {
+    it('should keep state unchanged', () => {
+      expect(
+        entities(currentState, { type: 'entities/users/UPDATE', meta: {} }),
+      ).toBe(currentState);
+    });
+  });
+
   describe('given an unhandled action method', () => {
-    it('should return keep state unchanged', () => {
+    it('should keep state unchanged', () => {
       expect(
         entities(currentState, {
           type: 'entities/users/NOT_HANDLED_METHOD',
-          meta: { method: 'NOT_HANDLED' },
+          meta: {
+            method: 'NOT_HANDLED',
+            type: 'users',
+          },
         }),
       ).toBe(currentState);
+    });
+  });
+
+  describe('given an action that changes state', () => {
+    beforeEach(() => {
+      action = actions.set('users', payload);
+      state = entities(undefined, action);
+    });
+
+    it('should update state', () => {
+      expect(state).toEqual({
+        users: { content: payload.content },
+      });
+    });
+
+    it('should have entity type', () => {
+      expect(state).toHaveProperty('users');
+    });
+
+    it('should keep other entities unchanged', () => {
+      payload = { content: { 2: { name: 'Sugar' } } };
+      action = actions.update('products', payload);
+      state = entities(currentState, action);
+      expect(state.users).toBe(currentState.users);
     });
   });
 });
