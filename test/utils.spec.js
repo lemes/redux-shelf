@@ -1,7 +1,7 @@
 import { entries } from '../src/utils';
 
 describe('entries', () => {
-  describe('given no props', () => {
+  describe('given no obj', () => {
     it('should return empty array', () => {
       expect(entries()).toEqual([]);
     });

@@ -165,7 +165,7 @@ describe('entities', () => {
     it('should return keep state unchanged', () => {
       expect(
         entities(currentState, {
-          type: 'NOT_HANDLED_METHOF',
+          type: 'entities/users/NOT_HANDLED_METHOD',
           meta: { method: 'NOT_HANDLED' },
         }),
       ).toBe(currentState);
