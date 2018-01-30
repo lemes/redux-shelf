@@ -58,8 +58,8 @@ describe('entities', () => {
       });
 
       it('should remove entity', () => {
-        delete currentState.users[userIdDeleted];
-        expect(state.users).toEqual(currentState.users);
+        const { [`${userIdDeleted}`]: omit, ...rest } = currentState.users;
+        expect(state.users).toEqual(rest);
       });
 
       it('should not update other entities on state', () => {
