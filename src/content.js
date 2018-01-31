@@ -7,7 +7,7 @@ export default function content(state = {}, action) {
         return state;
       }
 
-      const { [action.meta.selector]: omit, ...newState } = state;
+      const { [`${action.meta.selector}`]: omit, ...newState } = state;
       return newState;
     }
 

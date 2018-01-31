@@ -1,4 +1,5 @@
 import { methods } from './constants';
+import ids from './ids';
 import content from './content';
 
 function generateActionType(type, method) {
@@ -17,8 +18,8 @@ export function remove(type, selector) {
   return {
     type: generateActionType(type, methods.REMOVE),
     meta: {
-      selector: `${selector}`,
       method: methods.REMOVE,
+      selector,
       type,
     },
   };
@@ -36,16 +37,18 @@ export default function entities(state = {}, action) {
     return state;
   }
 
-  const currentCotent = state[action.meta.type];
-  const newContent = content(currentCotent, action);
+  const entity = state[action.meta.type] || {};
+  const newIds = ids(entity.ids, action);
+  const newContent = content(entity.content, action);
 
-  if (currentCotent === newContent) {
+  if (entity.content === newContent) {
     return state;
   }
 
   return {
     ...state,
     [action.meta.type]: {
+      ids: newIds,
       content: newContent,
     },
   };

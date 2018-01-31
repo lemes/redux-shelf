@@ -8,8 +8,9 @@ describe('entities', () => {
 
   beforeEach(() => {
     currentState = {
-      products: { content: { 1: { name: 'Milk' } } },
+      products: { ids: [1], content: { 1: { name: 'Milk' } } },
       users: {
+        ids: [2, 3],
         content: {
           2: { name: 'Lisa Silva' },
           3: { name: 'Marcus Paiva' },
@@ -17,6 +18,7 @@ describe('entities', () => {
       },
     };
     payload = {
+      ids: [1, 2],
       content: {
         1: { name: 'Joe Bars' },
         2: { name: 'Lisa Lemes' },
@@ -38,11 +40,7 @@ describe('entities', () => {
       });
 
       it('should return meta selector', () => {
-        expect(action.meta.selector).toBe(`${userIdDeleted}`);
-      });
-
-      it('should return meta selector as string', () => {
-        expect(typeof action.meta.selector).toBe('string');
+        expect(action.meta.selector).toBe(userIdDeleted);
       });
 
       it('should return meta method REMOVE', () => {
@@ -158,19 +156,35 @@ describe('entities', () => {
 
     it('should update state', () => {
       expect(state).toEqual({
-        users: { content: payload.content },
+        users: payload,
       });
     });
 
     it('should have entity type', () => {
       expect(state).toHaveProperty('users');
     });
+  });
 
-    it('should keep other entities unchanged', () => {
-      payload = { content: { 2: { name: 'Sugar' } } };
+  describe('given another entity type action', () => {
+    beforeEach(() => {
+      payload = { ids: [2], content: { 2: { name: 'Sugar' } } };
       action = actions.update('products', payload);
       state = entities(currentState, action);
+    });
+
+    it('should keep other entities unchanged', () => {
       expect(state.users).toBe(currentState.users);
+    });
+
+    it('should update entity content with the payload provided', () => {
+      expect(state.products.content).toEqual({
+        ...currentState.products.content,
+        ...payload.content,
+      });
+    });
+
+    it('should update entity ids with the payload provided', () => {
+      expect(state.products.ids).toEqual([1, 2]);
     });
   });
 });
