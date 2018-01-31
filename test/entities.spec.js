@@ -102,8 +102,22 @@ describe('entities', () => {
   });
 
   describe('given init action', () => {
-    it('should return initial state', () => {
-      expect(entities(undefined, { type: '@@INIT' })).toEqual({});
+    it('should return `of` function on initial state', () => {
+      expect(typeof entities(undefined, { type: '@@INIT' }).of).toEqual(
+        'function',
+      );
+    });
+
+    it('should return `idsOf` function on initial state', () => {
+      expect(typeof entities(undefined, { type: '@@INIT' }).idsOf).toEqual(
+        'function',
+      );
+    });
+
+    it('should return `contentOf` function on initial state', () => {
+      expect(typeof entities(undefined, { type: '@@INIT' }).contentOf).toEqual(
+        'function',
+      );
     });
   });
 
@@ -155,8 +169,8 @@ describe('entities', () => {
     });
 
     it('should update state', () => {
-      expect(state).toEqual({
-        users: payload,
+      expect(state.users).toEqual({
+        ...payload,
       });
     });
 
@@ -185,6 +199,136 @@ describe('entities', () => {
 
     it('should update entity ids with the payload provided', () => {
       expect(state.products.ids).toEqual([1, 2]);
+    });
+  });
+});
+
+describe('entities.of', () => {
+  let action;
+  let payload;
+  let selector;
+  let state;
+
+  describe('when getting entity type from state', () => {
+    beforeEach(() => {
+      payload = {
+        ids: [1, 2],
+        content: {
+          1: { name: 'Joe Bars' },
+          2: { name: 'Lisa Lemes' },
+        },
+      };
+      action = actions.set('users', payload);
+      state = entities(undefined, action);
+    });
+
+    it('should return matched entity ids', () => {
+      expect(state.of('users')).toBe(payload.ids);
+    });
+
+    it('should return empty array when not matched', () => {
+      expect(state.of('products')).toHaveLength(0);
+    });
+
+    describe('given a selector', () => {
+      beforeEach(() => {
+        selector = 1;
+      });
+
+      it('should return matched entity by selector', () => {
+        expect(state.of('users', selector)).toBe(payload.content[selector]);
+      });
+
+      it('should return undefined when not matched', () => {
+        expect(state.of('users', 'not-found-selector')).toBeUndefined();
+      });
+
+      it('should return undefined when entity do not exist', () => {
+        expect(state.of('products', 'my-product-id')).toBeUndefined();
+      });
+    });
+  });
+});
+
+describe('entities.idsOf', () => {
+  let action;
+  let payload;
+  let state;
+
+  describe('when getting ids from an specifc entity type from state', () => {
+    beforeEach(() => {
+      payload = {
+        ids: [1, 2],
+        content: {
+          1: { name: 'Joe Bars' },
+          2: { name: 'Lisa Lemes' },
+        },
+      };
+      action = actions.set('users', payload);
+      state = entities(undefined, action);
+    });
+
+    it('should return matched entity ids', () => {
+      expect(state.idsOf('users')).toBe(payload.ids);
+    });
+
+    it('should return empty array when not matched', () => {
+      expect(state.idsOf('products')).toEqual([]);
+    });
+
+    it('should return empty array when matched entity does not have ids', () => {
+      // It was necessary redefine the values of payload, action and state here
+      // in order to initialize the state with an entity (users) that doesn't have
+      // ids
+      payload = {
+        content: {
+          1: { name: 'Joe Bars' },
+          2: { name: 'Lisa Lemes' },
+        },
+      };
+      action = actions.set('users', payload);
+      state = entities(undefined, action);
+      expect(state.idsOf('users')).toEqual([]);
+    });
+  });
+});
+
+describe('entities.contentOf', () => {
+  let action;
+  let payload;
+  let state;
+
+  beforeEach(() => {
+    payload = {
+      ids: [1, 2],
+      content: {
+        1: { name: 'Joe Bars' },
+        2: { name: 'Lisa Lemes' },
+      },
+    };
+    action = actions.set('users', payload);
+    state = entities(undefined, action);
+  });
+
+  describe('when getting content of an specific entity record, given a type and selector', () => {
+    it('should return content of matched type/selector', () => {
+      expect(state.contentOf('users', 2)).toEqual(payload.content[2]);
+    });
+
+    it('should return undefined when there is no entity that matches with provided type', () => {
+      expect(state.contentOf('products')).toBeUndefined();
+    });
+
+    it('should return undefined when entity matched does not have content', () => {
+      // It was necessary redefine the values of payload, action and state here
+      // in order to initialize the state with an entity (users) that doesn't have
+      // content
+      payload = {
+        ids: [1, 2],
+      };
+      action = actions.set('users', payload);
+      state = entities(undefined, action);
+      expect(state.contentOf('users', 2)).toBeUndefined();
     });
   });
 });
