@@ -87,8 +87,8 @@ Bellow you can find the description of the API provided by Redux Shelf library.
 // userActions.js
 import { entities, communication } from 'redux-shelf';
 
-// Here I assuming that you're using some middleware to handle asynchronous actions, for example,
-// Redux Thunk
+// Here I assuming that you're using some middleware to handle
+// asynchronous actions, for example, Redux Thunk
 export function fetchUsers() {
   return async (dispatch) => {
     dispatch(communication.starting('users'));

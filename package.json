@@ -1,6 +1,6 @@
 {
   "name": "redux-shelf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "description":
     "Helper reducers and actions to take away your boilerplate code from both Data and Communication state types",
