@@ -60,8 +60,8 @@ Bellow you can find the description of the API provided by Redux Shelf library.
 * `set(type, payload)`: Overrides the current state of an Entity.
 * `update(type, payload)`: Merge the current state of an Entity with new state.
 * `remove(type, selector)`: Remove a record of an Entity.
-* `of(type, selector?)`: Get information about an Entity or one of its records, dependending of if
-  you provide 'selector' parameter or not.
+* `of(type, selector?)`: Returns an array of ids or an object if selector is given,
+  if doesn't find, returns an empty array or undefined.
 
 ### Communication Actions
 
@@ -73,8 +73,7 @@ Bellow you can find the description of the API provided by Redux Shelf library.
   given entity type, selector and/or error.
 * `cancel(type, selector?)`: Sets communication status with the `CANCEL` status for the given
   entity type and selector.
-* `of(type, selector?)`: Returns an object (with 'loading' and 'error' properties) with meta data
-  about communication sate of an Entity or one of its records.
+* `of(type, selector?)`: Returns an object with `loading` and `error`.
 
 ## Usage
 
