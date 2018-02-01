@@ -105,6 +105,22 @@ export function fetchUsers() {
 ...
 
 // UserList.jsx
+export const UserList = ({ loading, error, userIds }) => {
+  if (error) {
+    return <div>Failed to load users</div>
+  }
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  return (
+    <div>
+      {userIds.map(userId => <UserItem key={userId} userId={id} />)}
+    </div>
+  );
+);
+
 export default connect(
   ({ entities, communication }) => {
     const {
@@ -112,19 +128,34 @@ export default connect(
       error,
     } = communication.of('users');
 
-    const users = entities.of('users');
+    const userIds = entities.of('users');
 
     return {
       loading,
       error,
-      usersIds: users.ids,
-      usersContent: users.content,
+      userIds,
     };
   },
-  {
-    ...
-  }
 )(UserList);
+
+...
+
+// UserItem.jsx
+export const UserItem = ({ name }) => (
+  <span>
+    {name}
+  </span>
+);
+
+export default connect(
+  ({ entities }, { userId }) => {
+    const user = entities.of('users', userId);
+
+    return {
+      name: user.name,
+    };
+  },
+)(UserItem);
 ```
 
 ## License
