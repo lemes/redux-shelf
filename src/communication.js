@@ -97,3 +97,8 @@ export default function communication(state = INITIAL_STATE, action) {
       return state;
   }
 }
+
+communication.cancel = cancel;
+communication.done = done;
+communication.fail = fail;
+communication.starting = starting;

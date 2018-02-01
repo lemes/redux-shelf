@@ -1,4 +1,4 @@
-import communication, * as actions from '../src/communication';
+import { communication } from '../src/';
 
 describe('communication', () => {
   let action;
@@ -13,7 +13,7 @@ describe('communication', () => {
 
   describe('when dispatching starting communication action', () => {
     beforeEach(() => {
-      action = actions.starting(type);
+      action = communication.starting(type);
       state = communication(undefined, action);
     });
 
@@ -36,7 +36,7 @@ describe('communication', () => {
     describe('given a selector', () => {
       beforeEach(() => {
         selector = 'userId';
-        action = actions.starting(type, selector);
+        action = communication.starting(type, selector);
         state = communication(undefined, action);
       });
 
@@ -52,7 +52,7 @@ describe('communication', () => {
 
   describe('when dispatching cancel communication action', () => {
     beforeEach(() => {
-      action = actions.cancel(type);
+      action = communication.cancel(type);
       state = communication(
         {
           users: { status: 'STARTING' },
@@ -80,7 +80,7 @@ describe('communication', () => {
     describe('given a selector', () => {
       beforeEach(() => {
         selector = 'userId';
-        action = actions.cancel(type, selector);
+        action = communication.cancel(type, selector);
         state = communication(
           {
             [`users:${selector}`]: { status: 'STARTING' },
@@ -101,7 +101,7 @@ describe('communication', () => {
 
   describe('when dispatching done communication action', () => {
     beforeEach(() => {
-      action = actions.done(type);
+      action = communication.done(type);
       state = communication(
         {
           users: { status: 'STARTING' },
@@ -129,7 +129,7 @@ describe('communication', () => {
     describe('given a selector', () => {
       beforeEach(() => {
         selector = 'userId';
-        action = actions.done(type, selector);
+        action = communication.done(type, selector);
         state = communication(
           {
             [`users:${selector}`]: { status: 'STARTING' },
@@ -151,7 +151,7 @@ describe('communication', () => {
   describe('when dispatching fail communication action', () => {
     beforeEach(() => {
       error = new Error('my mocked error');
-      action = actions.fail(type, error);
+      action = communication.fail(type, error);
       state = communication(undefined, action);
     });
 
@@ -187,7 +187,7 @@ describe('communication', () => {
       beforeEach(() => {
         selector = 'userId';
         error = new Error('my mocked error');
-        action = actions.fail(type, selector, error);
+        action = communication.fail(type, selector, error);
         state = communication(
           {
             [`users:${selector}`]: { status: 'STARTING' },
@@ -211,7 +211,7 @@ describe('communication', () => {
 
     describe('given no error', () => {
       beforeEach(() => {
-        action = actions.fail(type);
+        action = communication.fail(type);
       });
 
       it('should return payload undefined', () => {
@@ -259,7 +259,7 @@ describe('communication.of', () => {
 
   describe('when there is a not-yet complete request', () => {
     beforeEach(() => {
-      action = actions.starting('users');
+      action = communication.starting('users');
       state = communication(undefined, action);
     });
 
@@ -273,7 +273,7 @@ describe('communication.of', () => {
 
     describe('given a selector', () => {
       beforeEach(() => {
-        action = actions.starting('users', 'userA');
+        action = communication.starting('users', 'userA');
         state = communication(undefined, action);
       });
 
@@ -319,7 +319,7 @@ describe('communication.of', () => {
     let error;
     beforeEach(() => {
       error = new Error('Somthing wrong happened');
-      action = actions.fail('users', error);
+      action = communication.fail('users', error);
       state = communication(undefined, action);
     });
 
@@ -336,7 +336,7 @@ describe('communication.of', () => {
     describe('given a selector', () => {
       beforeEach(() => {
         error = new Error('Somthing wrong happened');
-        action = actions.fail('users', 'userA', error);
+        action = communication.fail('users', 'userA', error);
         state = communication(undefined, action);
       });
 

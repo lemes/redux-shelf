@@ -76,3 +76,7 @@ export default function entities(state = INITIAL_STATE, action) {
     },
   };
 }
+
+entities.set = set;
+entities.update = update;
+entities.remove = remove;

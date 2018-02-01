@@ -1,4 +1,8 @@
-import entities, * as actions from '../src/entities';
+import { entities } from '../src';
+
+// console.log(entities);
+
+// const entities = r.entities;
 
 describe('entities', () => {
   let action;
@@ -31,7 +35,7 @@ describe('entities', () => {
 
     beforeEach(() => {
       userIdDeleted = 2;
-      action = actions.remove('users', userIdDeleted);
+      action = entities.remove('users', userIdDeleted);
     });
 
     describe('action', () => {
@@ -55,7 +59,7 @@ describe('entities', () => {
 
   describe('when setting an entity', () => {
     beforeEach(() => {
-      action = actions.set('users', payload);
+      action = entities.set('users', payload);
     });
 
     describe('action', () => {
@@ -79,7 +83,7 @@ describe('entities', () => {
 
   describe('when updating an entity', () => {
     beforeEach(() => {
-      action = actions.update('users', payload);
+      action = entities.update('users', payload);
     });
 
     describe('action', () => {
@@ -164,7 +168,7 @@ describe('entities', () => {
 
   describe('given an action that changes state', () => {
     beforeEach(() => {
-      action = actions.set('users', payload);
+      action = entities.set('users', payload);
       state = entities(undefined, action);
     });
 
@@ -182,7 +186,7 @@ describe('entities', () => {
   describe('given another entity type action', () => {
     beforeEach(() => {
       payload = { ids: [2], content: { 2: { name: 'Sugar' } } };
-      action = actions.update('products', payload);
+      action = entities.update('products', payload);
       state = entities(currentState, action);
     });
 
@@ -218,7 +222,7 @@ describe('entities.of', () => {
           2: { name: 'Lisa Lemes' },
         },
       };
-      action = actions.set('users', payload);
+      action = entities.set('users', payload);
       state = entities(undefined, action);
     });
 
@@ -264,7 +268,7 @@ describe('entities.idsOf', () => {
           2: { name: 'Lisa Lemes' },
         },
       };
-      action = actions.set('users', payload);
+      action = entities.set('users', payload);
       state = entities(undefined, action);
     });
 
@@ -286,7 +290,7 @@ describe('entities.idsOf', () => {
           2: { name: 'Lisa Lemes' },
         },
       };
-      action = actions.set('users', payload);
+      action = entities.set('users', payload);
       state = entities(undefined, action);
       expect(state.idsOf('users')).toEqual([]);
     });
@@ -306,7 +310,7 @@ describe('entities.contentOf', () => {
         2: { name: 'Lisa Lemes' },
       },
     };
-    action = actions.set('users', payload);
+    action = entities.set('users', payload);
     state = entities(undefined, action);
   });
 
@@ -326,7 +330,7 @@ describe('entities.contentOf', () => {
       payload = {
         ids: [1, 2],
       };
-      action = actions.set('users', payload);
+      action = entities.set('users', payload);
       state = entities(undefined, action);
       expect(state.contentOf('users', 2)).toBeUndefined();
     });
