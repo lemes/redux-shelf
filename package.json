@@ -20,8 +20,9 @@
   },
   "repository": "https://github.com/lemes/redux-shelf.git",
   "authors": [
-    "Vinícius Lemes (https://github.com/lemes)",
-    "Guilherme Popolin (https://github.com/guilhermespopolin)"
+    "Guilherme Popolin (https://github.com/guilhermespopolin)",
+    "Rener Baffa (https://github.com/renerbaffa)",
+    "Vinícius Lemes (https://github.com/lemes)"
   ],
   "license": "MIT",
   "private": false,
