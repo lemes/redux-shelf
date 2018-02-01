@@ -37,6 +37,12 @@ application, by using a simple and easy to learn API.
 
 ## Installation
 
+`yarn add redux-shelf`
+
+or
+
+`npm install redux-shelf`
+
 ## Configuration
 
 ```javascript
