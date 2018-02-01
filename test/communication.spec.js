@@ -158,7 +158,9 @@ describe('communication', () => {
 
   describe('given init action', () => {
     it('should return initial state', () => {
-      expect(communication(undefined, { type: '@@INIT' })).toEqual({});
+      expect(typeof communication(undefined, { type: '@@INIT' }).of).toEqual(
+        'function',
+      );
     });
   });
 
@@ -166,6 +168,89 @@ describe('communication', () => {
     it('should keep state unchanged', () => {
       expect(communication(currentState, { type: 'NOT_HANDLED' })).toBe(
         currentState,
+      );
+    });
+  });
+
+  describe('given an action that has an invalid status', () => {
+    it('should keep state unchanged', () => {
+      expect(
+        communication(currentState, {
+          type: 'communication/users/INVALID_STATUS',
+          meta: {
+            type: 'users',
+            status: 'INVALID_STATUS',
+          },
+        }),
+      ).toBe(currentState);
+    });
+  });
+});
+
+describe('communication.of', () => {
+  let action;
+  let state;
+
+  describe('when there is some work in progress external request', () => {
+    beforeEach(() => {
+      action = actions.starting('users', 'a1b2c3');
+      state = communication(undefined, action);
+    });
+
+    it('should set loding flag to true', () => {
+      expect(state.of('users', 'a1b2c3').loading).toBeTruthy();
+    });
+
+    it('should set error flag to undefined', () => {
+      expect(state.of('users', 'a1b2c3').error).toBeUndefined();
+    });
+  });
+
+  describe('when there os come some external request that was canceled', () => {
+    beforeEach(() => {
+      action = actions.cancel('users');
+      state = communication(undefined, action);
+    });
+
+    it('should set loading flag to false', () => {
+      expect(state.of('users').loading).toBeFalsy();
+    });
+
+    it('should set error flag to undefined', () => {
+      expect(state.of('users').error).toBeUndefined();
+    });
+  });
+
+  describe('when there is some external request that was finished', () => {
+    beforeEach(() => {
+      action = actions.done('users');
+      state = communication(undefined, action);
+    });
+
+    it('should set loading flag to false', () => {
+      expect(state.of('users').loading).toBeFalsy();
+    });
+
+    it('should set error flag to undefined', () => {
+      expect(state.of('users').error).toBeUndefined();
+    });
+  });
+
+  describe('when there some external request that failed', () => {
+    let error;
+    beforeEach(() => {
+      error = new Error('Somthing wrong happened');
+      action = actions.fail('users', error);
+      state = communication(undefined, action);
+    });
+
+    it('should set loading flag to false', () => {
+      expect(state.of('users').loading).toBeFalsy();
+    });
+
+    it('should return the error', () => {
+      expect(state.of('users').error).toEqual(
+        new Error('Somthing wrong happened'),
       );
     });
   });

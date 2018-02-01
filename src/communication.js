@@ -39,26 +39,61 @@ export function fail(type, ...args) {
 
 export const starting = generateActionByStatus('STARTING');
 
-export default function communication(state = {}, action) {
-  if (!action.type.startsWith('communication')) {
+const INITIAL_STATE = {
+  of(type, selector) {
+    const identifier = [type];
+    if (selector) {
+      identifier.push(selector);
+    }
+
+    const state = this[identifier.join(':')] || {};
+
+    return {
+      loading: state.status === 'STARTING',
+      error: state.error,
+    };
+  },
+};
+
+export default function communication(state = INITIAL_STATE, action) {
+  if (
+    !action.type ||
+    !action.type.startsWith('communication') ||
+    !(action.meta && action.meta.status)
+  ) {
     return state;
   }
 
-  const selector = [action.meta.type];
+  const identifier = [action.meta.type];
   if (action.meta.selector) {
-    selector.push(action.meta.selector);
+    identifier.push(action.meta.selector);
   }
 
-  const newState = {
-    status: action.meta.status,
-  };
+  switch (action.meta.status) {
+    case 'STARTING':
+      return {
+        ...state,
+        [identifier.join(':')]: {
+          status: action.meta.status,
+        },
+      };
 
-  if (action.error) {
-    newState.error = action.payload;
+    case 'DONE':
+    case 'CANCEL': {
+      const { [identifier.join(':')]: omit, ...newState } = state;
+      return newState;
+    }
+
+    case 'FAIL':
+      return {
+        ...state,
+        [identifier.join(':')]: {
+          status: action.meta.status,
+          error: action.payload,
+        },
+      };
+
+    default:
+      return state;
   }
-
-  return {
-    ...state,
-    [selector.join(':')]: newState,
-  };
 }
