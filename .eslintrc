@@ -1,7 +1,5 @@
 {
   "env": {
-    "browser": true,
-    "node": false,
     "jest": true
   },
   "extends": ["airbnb", "plugin:jest/recommended", "prettier"],

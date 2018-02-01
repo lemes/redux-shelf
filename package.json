@@ -2,6 +2,8 @@
   "name": "redux-shelf",
   "version": "0.0.1",
   "main": "index.js",
+  "description":
+    "Helper reducers and actions to take away your boilerplate code from both Data and Communication state types",
   "scripts": {
     "format": "prettier --write {src,test}/**/*.js",
     "precommit": "pretty-quick --staged",
@@ -18,7 +20,10 @@
     "build":
       "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min"
   },
-  "repository": "https://github.com/lemes/redux-shelf.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lemes/redux-shelf.git"
+  },
   "authors": [
     "Guilherme Popolin (https://github.com/guilhermespopolin)",
     "Rener Baffa (https://github.com/renerbaffa)",
@@ -31,6 +36,7 @@
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
     "babel-jest": "^22.1.0",
+    "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
