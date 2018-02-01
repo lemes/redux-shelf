@@ -103,20 +103,20 @@ describe('entities', () => {
 
   describe('given init action', () => {
     it('should return `of` function on initial state', () => {
-      expect(typeof entities(undefined, { type: '@@INIT' }).of).toEqual(
-        'function',
+      expect(entities(undefined, { type: '@@INIT' }).of).toBeInstanceOf(
+        Function,
       );
     });
 
     it('should return `idsOf` function on initial state', () => {
-      expect(typeof entities(undefined, { type: '@@INIT' }).idsOf).toEqual(
-        'function',
+      expect(entities(undefined, { type: '@@INIT' }).idsOf).toBeInstanceOf(
+        Function,
       );
     });
 
     it('should return `contentOf` function on initial state', () => {
-      expect(typeof entities(undefined, { type: '@@INIT' }).contentOf).toEqual(
-        'function',
+      expect(entities(undefined, { type: '@@INIT' }).contentOf).toBeInstanceOf(
+        Function,
       );
     });
   });
