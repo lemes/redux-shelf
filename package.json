@@ -1,7 +1,8 @@
 {
   "name": "redux-shelf",
   "version": "0.0.2",
-  "main": "index.js",
+  "main": "lib/redux-shelf.js",
+  "module": "es/redux-shelf.js",
   "description":
     "Helper reducers and actions to take away your boilerplate code from both Data and Communication state types",
   "scripts": {
@@ -10,7 +11,7 @@
     "test": "cross-env BABEL_ENV=commonjs jest",
     "eslint-check":
       "eslint --print-config .eslintrc | eslint-config-prettier-check",
-    "build:commonjs": " cross-env NODE_ENV=cjs rollup -c -o lib/redux-shelf.js",
+    "build:commonjs": "cross-env NODE_ENV=cjs rollup -c -o lib/redux-shelf.js",
     "build:es":
       "cross-env BABEL_ENV=es NODE_ENV=es rollup -c -o es/redux-shelf.js",
     "build:umd":
