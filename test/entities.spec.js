@@ -1,9 +1,5 @@
 import { entities } from '../src';
 
-// console.log(entities);
-
-// const entities = r.entities;
-
 describe('entities', () => {
   let action;
   let currentState;
@@ -105,23 +101,43 @@ describe('entities', () => {
     });
   });
 
-  describe('given init action', () => {
-    it('should return `of` function on initial state', () => {
-      expect(entities(undefined, { type: '@@INIT' }).of).toBeInstanceOf(
-        Function,
-      );
+  describe('on initializing store', () => {
+    let initialState;
+
+    describe('given init action with state provided', () => {
+      beforeEach(() => {
+        initialState = entities(currentState, { type: '@@INIT' });
+      });
+
+      it('should return `of` function on initial state', () => {
+        expect(initialState.of).toBeInstanceOf(Function);
+      });
+
+      it('should return `idsOf` function on initial state', () => {
+        expect(initialState.idsOf).toBeInstanceOf(Function);
+      });
+
+      it('should return `contentOf` function on initial state', () => {
+        expect(initialState.contentOf).toBeInstanceOf(Function);
+      });
     });
 
-    it('should return `idsOf` function on initial state', () => {
-      expect(entities(undefined, { type: '@@INIT' }).idsOf).toBeInstanceOf(
-        Function,
-      );
-    });
+    describe('given init action with empty state', () => {
+      beforeEach(() => {
+        initialState = entities(undefined, { type: '@@INIT' });
+      });
 
-    it('should return `contentOf` function on initial state', () => {
-      expect(entities(undefined, { type: '@@INIT' }).contentOf).toBeInstanceOf(
-        Function,
-      );
+      it('should return `of` function on initial state', () => {
+        expect(initialState.of).toBeInstanceOf(Function);
+      });
+
+      it('should return `idsOf` function on initial state', () => {
+        expect(initialState.idsOf).toBeInstanceOf(Function);
+      });
+
+      it('should return `contentOf` function on initial state', () => {
+        expect(initialState.contentOf).toBeInstanceOf(Function);
+      });
     });
   });
 

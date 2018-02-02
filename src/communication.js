@@ -39,23 +39,21 @@ export function fail(type, ...args) {
 
 export const starting = generateActionByStatus('STARTING');
 
-const INITIAL_STATE = {
-  of(type, selector) {
-    const identifier = [type];
-    if (selector) {
-      identifier.push(selector);
-    }
+function of(type, selector) {
+  const identifier = [type];
+  if (selector) {
+    identifier.push(selector);
+  }
 
-    const state = this[identifier.join(':')] || {};
+  const state = this[identifier.join(':')] || {};
 
-    return {
-      loading: state.status === 'STARTING',
-      error: state.error,
-    };
-  },
-};
+  return {
+    loading: state.status === 'STARTING',
+    error: state.error,
+  };
+}
 
-export default function communication(state = INITIAL_STATE, action) {
+function reducer(state = {}, action) {
   if (
     !action.type ||
     !action.type.startsWith('communication') ||
@@ -96,6 +94,13 @@ export default function communication(state = INITIAL_STATE, action) {
     default:
       return state;
   }
+}
+
+export default function communication(state, action) {
+  const newState = reducer(state, action);
+  newState.of = of;
+
+  return newState;
 }
 
 communication.cancel = cancel;
