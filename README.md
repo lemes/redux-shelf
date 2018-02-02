@@ -66,8 +66,12 @@ Bellow you can find the description of the API provided by Redux Shelf library.
 * `set(type, payload)`: Overrides the current state of an Entity.
 * `update(type, payload)`: Merge the current state of an Entity with new state.
 * `remove(type, selector)`: Remove a record of an Entity.
-* `of(type, selector?)`: Returns an array of ids or an object if selector is given,
-  if doesn't find, returns an empty array or undefined.
+* `idsOf(type)`: Returns the array of ids of an Entity type provided as parameter.
+* `contentOf(type, selector)`: Returns content object of an specific Entity record, identified by
+  its type and selector provided as parameters.
+* `of(type, selector?)`: It's an alias for `idsOf` and `contentOf` methods. When only `type`
+  parameter is given to `of` method it behaves like `idsOf` call, while when `selector` parameter
+  is also provided `of` method will behave like `contentOf` call.
 
 ### Communication Actions
 
@@ -133,7 +137,7 @@ export default connect(
       error,
     } = communication.of('users');
 
-    const userIds = entities.of('users');
+    const userIds = entities.idsOf('users');
 
     return {
       loading,
@@ -154,7 +158,7 @@ export const UserItem = ({ name }) => (
 
 export default connect(
   ({ entities }, { userId }) => {
-    const user = entities.of('users', userId);
+    const user = entities.contentOf('users', userId);
 
     return {
       name: user.name,
