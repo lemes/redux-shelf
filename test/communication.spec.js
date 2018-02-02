@@ -1,4 +1,4 @@
-import { communication } from '../src/';
+import { communication } from '../src';
 
 describe('communication', () => {
   let action;
@@ -221,17 +221,38 @@ describe('communication', () => {
   });
 
   describe('given init action', () => {
-    it('should return `of` function on initial state', () => {
-      expect(communication(undefined, { type: '@@INIT' }).of).toBeInstanceOf(
-        Function,
-      );
+    let initialState;
+
+    describe('given init action with state provided', () => {
+      beforeEach(() => {
+        initialState = communication(
+          {
+            users: { status: 'STARTING' },
+          },
+          { type: '@@INIT' },
+        );
+      });
+
+      it('should return `of` function on initial state', () => {
+        expect(initialState.of).toBeInstanceOf(Function);
+      });
+    });
+
+    describe('given init action with empty state', () => {
+      beforeEach(() => {
+        initialState = communication(undefined, { type: '@@INIT' });
+      });
+
+      it('should return `of` function on initial state', () => {
+        expect(initialState.of).toBeInstanceOf(Function);
+      });
     });
   });
 
   describe('given an action that do not starts with "communication"', () => {
     it('should keep state unchanged', () => {
-      const curentState = {};
-      expect(communication(curentState, { type: 'NOT_HANDLED' })).toBe(
+      const curentState = { of() {} };
+      expect(communication(curentState, { type: 'NOT_HANDLED' })).toEqual(
         curentState,
       );
     });
