@@ -2,28 +2,28 @@ import { methods } from './constants';
 import ids from './ids';
 import content from './content';
 
-export const INITIAL_STATE = {
-  of(type, selector) {
-    if (selector) {
-      return this.contentOf(type, selector);
-    }
-    return this.idsOf(type);
-  },
-  idsOf(type) {
-    const entity = this[type];
-    if (entity && entity.ids) {
-      return entity.ids;
-    }
-    return [];
-  },
-  contentOf(type, selector) {
-    const entity = this[type];
-    if (entity && entity.content) {
-      return entity.content[selector];
-    }
-    return undefined;
-  },
-};
+function of(type, selector) {
+  if (selector) {
+    return this.contentOf(type, selector);
+  }
+  return this.idsOf(type);
+}
+
+function idsOf(type) {
+  const entity = this[type];
+  if (entity && entity.ids) {
+    return entity.ids;
+  }
+  return [];
+}
+
+function contentOf(type, selector) {
+  const entity = this[type];
+  if (entity && entity.content) {
+    return entity.content[selector];
+  }
+  return undefined;
+}
 
 function generateActionType(type, method) {
   return `entities/${type}/${method}`;
@@ -52,7 +52,7 @@ export const set = generateActionByMethod(methods.SET);
 
 export const update = generateActionByMethod(methods.UPDATE);
 
-export default function entities(state = INITIAL_STATE, action) {
+function reducer(state = {}, action) {
   if (
     !action.type.startsWith('entities') ||
     !(action.meta && action.meta.type)
@@ -75,6 +75,15 @@ export default function entities(state = INITIAL_STATE, action) {
       content: newContent,
     },
   };
+}
+
+export default function entities(state, action) {
+  const newState = reducer(state, action);
+  newState.of = of;
+  newState.idsOf = idsOf;
+  newState.contentOf = contentOf;
+
+  return newState;
 }
 
 entities.set = set;
