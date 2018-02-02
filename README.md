@@ -137,7 +137,7 @@ export default connect(
       error,
     } = communication.of('users');
 
-    const userIds = entities.of('users');
+    const userIds = entities.idsOf('users');
 
     return {
       loading,
@@ -158,7 +158,7 @@ export const UserItem = ({ name }) => (
 
 export default connect(
   ({ entities }, { userId }) => {
-    const user = entities.of('users', userId);
+    const user = entities.contentOf('users', userId);
 
     return {
       name: user.name,
