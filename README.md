@@ -4,6 +4,8 @@ Redux Shelf is a library that provide a simple API to create and manage both **E
 **Communication** state of your application using Redux reducers, by managing for you all the
 boilerplate necessary to do that.
 
+[![Build Status](https://travis-ci.org/lemes/redux-shelf.svg?branch=master)](https://travis-ci.org/lemes/redux-shelf)
+
 ## Influences
 
 React applications contains several types of state wich we have to manage. James K. Nelson, on this
