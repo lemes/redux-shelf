@@ -9,7 +9,7 @@
     "format": "prettier --write {src,test}/**/*.js",
     "precommit": "pretty-quick --staged",
     "test": "cross-env BABEL_ENV=commonjs jest",
-    "test:coverage": "cross-env BABEL_ENV=commonjs jest --coverage",
+    "test:coverage": "npm test -- --coverage",
     "eslint-check":
       "eslint --print-config .eslintrc | eslint-config-prettier-check",
     "build:commonjs": "cross-env NODE_ENV=cjs rollup -c -o lib/redux-shelf.js",
