@@ -75,8 +75,24 @@ Bellow you can find the description of the API provided by Redux Shelf library.
   parameter is given to `of` method it behaves like `idsOf` call, while when `selector` parameter
   is also provided `of` method will behave like `contentOf` call.
 
-> <span style="color: #f0ad4e">Note:</span> By using methods `idsOf`, `contentOf` and `of`
-> (on Entity context) we're assuming that you'll normalize Entity data on ids/content form.
+<span style="color: red">Note: </span>By using Entity Actions API we're assuming that you'll
+normalize Entity data on ids/content form. So, you **must** to provide a normalize function that
+works like described below:
+
+```javascript
+const payload = [{ id: 1, name: 'Product 1' }, { id: 2, name: 'Product 2' }];
+console.log(normalize(payload, 'id'));
+// console output
+/*
+  {
+    ids: [1, 2],
+    content: {
+      1: { id: 1, name: 'Product 1' },
+      2: { id: 2, name: 'Product 2' },
+    },
+  }
+*/
+```
 
 ### Communication Actions
 
@@ -109,7 +125,7 @@ export function fetchUsers() {
 
       // We're assuming that you'll use normalize function in order to get Entity data on
       // ids/content shape.
-      dispatch(entities.set('users', normalizeEntity(payload)));
+      dispatch(entities.set('users', normalize(payload)));
       dispatch(communication.done('users'));
     } catch (e) {
       dispatch(communication.fail('users', e));
