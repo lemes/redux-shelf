@@ -63,7 +63,7 @@ export default (appReducers = combineReducers({
 
 Bellow you can find the description of the API provided by Redux Shelf library.
 
-### Entity Actions
+### Entity
 
 * `set(type, payload)`: Overrides the current state of an Entity.
 * `update(type, payload)`: Merge the current state of an Entity with new state.
@@ -79,7 +79,7 @@ Bellow you can find the description of the API provided by Redux Shelf library.
 normalize Entity data on ids/content form. So, you **must** either use `normalize` function
 provided by library or use another one that works similarly (check _Utils_ section).
 
-### Communication Actions
+### Communication
 
 * `starting(type, selector?)`: Sets communication status with the `STARTING` status for the given
   entity type and selector.
