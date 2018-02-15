@@ -1,11 +1,20 @@
 language: node_js
 node_js:
-  - "8"
+- '8'
 install:
-  - yarn install
+- yarn install
 script:
-  - yarn test:coverage
-  - yarn build
+- yarn test:coverage
+- yarn build
 cache:
   directories:
-    - node_modules
+  - node_modules
+deploy:
+  provider: npm
+  email: viniciu.lemes.silva@gmail.com
+  api_key:
+    secure: p9S1XyfvThnkWobL+HGxX4iJJ3x/vk3R0tn2C0wns+CGJBH2U9+dboYcASQo5QaTluNIA1LGGRZvHblscSObgusVTAKd3APPEqaDP6vuHELrepJS9nHDB2iQtTUy4/ytTMeRl5sNCaiLJXBX7g0jEKLuTT9t/OmTMAUSVPrLNCbjK0PqxuyZMlx3ZZvmiZOem4aT1bKmWUOEV2+ynREasBcnMDwm1hR3iAkGc9rOHIDwZF4UaEIzRXTwyrILBho9y8o5S4QJNXUJcPHrda92NkrJMahYD/qVhCRr8m/3WjFTBFM6Wg/KR1kNSogQfJYEo6hwO/B90/pLoSk1w2S1V3fp6WMRCmS4y/JSz0x/3x/91ZjpsEw7+JvbWNo2vpcSMoPXhR6CQgFFciLGsPDlHB1OWQt7HvKfGKwprJxUYycsK+hXj7se6/gOHmWPDdt/WDB5T3UAD42Lb74/gHFRJ2m/k6jvFwwRxfsNW9VNOcUYAG24NKP6MzxjOiPdYuHhJfOZgYAJ/9HQBjcbjRfya4a1JN15xXTZbby6yys8CGLhoArXWwd2pBWZWnOdxJpfZ9W37J7C01AMMluyYwxzzH8XxAoOs3job/IzAC9/Z+FKRgTD400xsgFKNA9SQLBn4E0PNeJWW7Mb1txcFewrQ1bdq27gFwlVZ4iQfIsp8oQ=
+  on:
+    tags: true
+    repo: lemes/redux-shelf
+  skip_cleanup: true

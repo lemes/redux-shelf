@@ -1,0 +1,6 @@
+.*
+*.lock
+node_modules
+coverage
+test
+rollup*
