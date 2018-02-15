@@ -27,13 +27,16 @@ export function normalize(payload, key = 'id') {
   }
 
   if (payload !== null && typeof payload === 'object') {
-    return {
-      ids: [...defaultObj.ids, payload[key]],
-      content: {
-        ...defaultObj,
-        [key]: payload,
-      },
-    };
+    const id = payload[key];
+
+    if (id) {
+      return {
+        ids: [id],
+        content: {
+          [id]: payload,
+        },
+      };
+    }
   }
 
   return defaultObj;
