@@ -75,6 +75,10 @@ Bellow you can find the description of the API provided by Redux Shelf library.
   parameter is given to `of` method it behaves like `idsOf` call, while when `selector` parameter
   is also provided `of` method will behave like `contentOf` call.
 
+<span style="color: red">Note: </span>By using Entity Actions API we're assuming that you'll
+normalize Entity data on ids/content form. So, you **must** either use `normalize` function
+provided by library or use another one that works similarly (check _Utils_ section).
+
 ### Communication Actions
 
 * `starting(type, selector?)`: Sets communication status with the `STARTING` status for the given
@@ -87,11 +91,70 @@ Bellow you can find the description of the API provided by Redux Shelf library.
   entity type and selector.
 * `of(type, selector?)`: Returns an object with `loading` and `error`.
 
+### Utils
+
+* `normalize(payload, key?)`: Normalizes a given payload to ids/content shape. If `key` parameter
+  is not provided, the function will normalize the payload by _id_ property, assuming that it has
+  it. The valid values for _payload_ parameter are: An object or an array of objects.
+  If the value provided as _payload_ parameter is invalid, the function will return a default
+  normalized object `{ ids: [], content: {} }`. See the examples below:
+
+```javascript
+const payload = [{ id: 1, name: 'Product 1' }, { id: 2, name: 'Product 2' }];
+console.log(normalize(payload, 'id'));
+// console output
+/*
+  {
+    ids: [1, 2],
+    content: {
+      1: { id: 1, name: 'Product 1' },
+      2: { id: 2, name: 'Product 2' },
+    },
+  }
+*/
+
+...
+
+const payload = { id: 1, name: 'Product 1' };
+console.log(normalize(payload));
+// console output
+/*
+  {
+    ids: [1],
+    content: {
+      1: { id: 1, name: 'Product 1' },
+    },
+  }
+*/
+
+...
+
+const payload = [
+  { identifier: 1, name: 'Product 1' },
+  { identifier: 2, name: 'Product 2' },
+  { id: 3, name: 'Product 2' },
+  true,
+  null,
+  42,
+];
+console.log(normalize(payload, 'identifier'));
+// console output
+/*
+  {
+    ids: [1, 2],
+    content: {
+      1: { identifier: 1, name: 'Product 1' },
+      2: { identifier: 2, name: 'Product 2' },
+    },
+  }
+*/
+```
+
 ## Usage
 
 ```javascript
 // userActions.js
-import { entities, communication } from 'redux-shelf';
+import { entities, communication, normalize } from 'redux-shelf';
 
 // Here I assuming that you're using some middleware to handle
 // asynchronous actions, for example, Redux Thunk
@@ -104,7 +167,7 @@ export function fetchUsers() {
       const request = await fetch(url);
       const payload = request.json();
 
-      dispatch(entities.set('users', payload));
+      dispatch(entities.set('users', normalize(payload)));
       dispatch(communication.done('users'));
     } catch (e) {
       dispatch(communication.fail('users', e));
