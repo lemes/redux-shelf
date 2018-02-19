@@ -1,4 +1,5 @@
 import entities from './entities';
 import communication from './communication';
+import { normalize } from './utils';
 
-export { entities, communication };
+export { communication, entities, normalize };
