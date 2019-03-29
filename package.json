@@ -57,5 +57,8 @@
     "rollup": "^0.55.1",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-uglify": "^3.0.0"
+  },
+  "peerDependencies": {
+    "normalizr": "3.3.0"
   }
 }
