@@ -3,54 +3,54 @@ function generateActionByStatus(status) {
     const action = {
       type: `communication/${type}/${status}`,
       meta: { type, status },
-    };
-
-    if (selector) {
-      action.meta.selector = selector;
     }
 
-    return action;
-  };
+    if (selector) {
+      action.meta.selector = selector
+    }
+
+    return action
+  }
 }
 
-export const cancel = generateActionByStatus('CANCEL');
+export const cancel = generateActionByStatus('CANCEL')
 
-export const done = generateActionByStatus('DONE');
+export const done = generateActionByStatus('DONE')
 
 export function fail(type, ...args) {
-  let selector;
-  let error;
+  let selector
+  let error
 
   if (args.length > 1) {
-    [selector, error] = args;
+    ;[selector, error] = args
   } else {
-    [error] = args;
+    ;[error] = args
   }
 
-  const action = generateActionByStatus('FAIL')(type, selector);
+  const action = generateActionByStatus('FAIL')(type, selector)
 
   if (error) {
-    action.payload = error;
-    action.error = true;
+    action.payload = error
+    action.error = true
   }
 
-  return action;
+  return action
 }
 
-export const starting = generateActionByStatus('STARTING');
+export const starting = generateActionByStatus('STARTING')
 
 function of(type, selector) {
-  const identifier = [type];
+  const identifier = [type]
   if (selector) {
-    identifier.push(selector);
+    identifier.push(selector)
   }
 
-  const state = this[identifier.join(':')] || {};
+  const state = this[identifier.join(':')] || {}
 
   return {
     loading: state.status === 'STARTING',
     error: state.error,
-  };
+  }
 }
 
 function reducer(state = {}, action) {
@@ -59,12 +59,12 @@ function reducer(state = {}, action) {
     !action.type.startsWith('communication') ||
     !(action.meta && action.meta.status)
   ) {
-    return state;
+    return state
   }
 
-  const identifier = [action.meta.type];
+  const identifier = [action.meta.type]
   if (action.meta.selector) {
-    identifier.push(action.meta.selector);
+    identifier.push(action.meta.selector)
   }
 
   switch (action.meta.status) {
@@ -74,12 +74,12 @@ function reducer(state = {}, action) {
         [identifier.join(':')]: {
           status: action.meta.status,
         },
-      };
+      }
 
     case 'DONE':
     case 'CANCEL': {
-      const { [identifier.join(':')]: omit, ...newState } = state;
-      return newState;
+      const { [identifier.join(':')]: omit, ...newState } = state
+      return newState
     }
 
     case 'FAIL':
@@ -89,21 +89,21 @@ function reducer(state = {}, action) {
           status: action.meta.status,
           error: action.payload,
         },
-      };
+      }
 
     default:
-      return state;
+      return state
   }
 }
 
 export default function communication(state, action) {
-  const newState = reducer(state, action);
-  newState.of = of;
+  const newState = reducer(state, action)
+  newState.of = of
 
-  return newState;
+  return newState
 }
 
-communication.cancel = cancel;
-communication.done = done;
-communication.fail = fail;
-communication.starting = starting;
+communication.cancel = cancel
+communication.done = done
+communication.fail = fail
+communication.starting = starting

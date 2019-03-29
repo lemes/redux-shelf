@@ -1,18 +1,18 @@
 export function entries(obj = {}) {
-  return Object.keys(obj).map((key) => [key, obj[key]]);
+  return Object.keys(obj).map((key) => [key, obj[key]])
 }
 
 export function guaranteeArray(param = []) {
-  return Array.isArray(param) ? param : [param];
+  return Array.isArray(param) ? param : [param]
 }
 
 export function normalize(payload, key = 'id') {
   return guaranteeArray(payload).reduce(
     (obj, element) => {
-      const id = element && element[key];
+      const id = element && element[key]
 
       if (!id) {
-        return obj;
+        return obj
       }
 
       return {
@@ -21,8 +21,8 @@ export function normalize(payload, key = 'id') {
           ...obj.content,
           [id]: element,
         },
-      };
+      }
     },
     { ids: [], content: {} },
-  );
+  )
 }
