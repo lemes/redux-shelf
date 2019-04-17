@@ -13,11 +13,11 @@ function generateActionByStatus(status) {
   }
 }
 
-export const cancel = generateActionByStatus('CANCEL')
+const cancel = generateActionByStatus('CANCEL')
 
-export const done = generateActionByStatus('DONE')
+const done = generateActionByStatus('DONE')
 
-export function fail(type, ...args) {
+function fail(type, ...args) {
   let selector
   let error
 
@@ -37,21 +37,7 @@ export function fail(type, ...args) {
   return action
 }
 
-export const starting = generateActionByStatus('STARTING')
-
-function of(type, selector) {
-  const identifier = [type]
-  if (selector) {
-    identifier.push(selector)
-  }
-
-  const state = this[identifier.join(':')] || {}
-
-  return {
-    loading: state.status === 'STARTING',
-    error: state.error,
-  }
-}
+const starting = generateActionByStatus('STARTING')
 
 function reducer(state = {}, action) {
   if (
@@ -96,14 +82,10 @@ function reducer(state = {}, action) {
   }
 }
 
-export default function communication(state, action) {
-  const newState = reducer(state, action)
-  newState.of = of
-
-  return newState
+export default {
+  cancel,
+  done,
+  fail,
+  starting,
+  reducer,
 }
-
-communication.cancel = cancel
-communication.done = done
-communication.fail = fail
-communication.starting = starting
