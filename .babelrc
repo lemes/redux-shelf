@@ -1,28 +1,20 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
         "targets": {
           "browsers": ["ie >= 11"]
         },
-        "exclude": ["transform-async-to-generator", "transform-regenerator"],
-        "modules": false,
-        "loose": true
+        "modules": false
       }
     ]
   ],
-  "plugins": ["transform-object-rest-spread"],
+  "plugins": ["@babel/plugin-transform-spread"],
   "env": {
-    "commonjs": {
+    "test": {
       "presets": [
-        [
-          "env",
-          {
-            "loose": true
-          }
-        ],
-        "jest"
+        ["@babel/preset-env"]
       ]
     }
   }
