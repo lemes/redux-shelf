@@ -13,11 +13,11 @@ function generateActionByStatus(status) {
   }
 }
 
+const starting = generateActionByStatus('STARTING')
+
 const cancel = generateActionByStatus('CANCEL')
 
-const done = generateActionByStatus('DONE')
-
-function fail(type, ...args) {
+const fail = (type, ...args) => {
   let selector
   let error
 
@@ -37,7 +37,7 @@ function fail(type, ...args) {
   return action
 }
 
-const starting = generateActionByStatus('STARTING')
+const done = generateActionByStatus('DONE')
 
 function reducer(state = {}, action) {
   if (
@@ -83,9 +83,9 @@ function reducer(state = {}, action) {
 }
 
 export default {
-  cancel,
-  done,
-  fail,
   starting,
+  cancel,
+  fail,
+  done,
   reducer,
 }

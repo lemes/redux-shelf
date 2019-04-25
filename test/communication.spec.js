@@ -1,374 +1,310 @@
-import { communication } from '../src'
+import communication from '../src/communication'
 
 describe('communication', () => {
-  let action
-  let error
-  let selector
-  let state
-  let type
+  describe('Action creators', () => {
+    describe('starting', () => {
+      describe('When only `type` is provided', () => {
+        it(
+          'should return an action that represents initialization ' +
+            'of an asynchronous operation related with a entity group',
+          () => {
+            expect(communication.starting('users')).toEqual({
+              type: 'communication/users/STARTING',
+              meta: { type: 'users', status: 'STARTING' },
+            })
+          },
+        )
+      })
 
-  beforeEach(() => {
-    type = 'users'
+      describe('When `type` and `selector` are provided', () => {
+        it(
+          'should return an action that represents initialization ' +
+            'of an asynchronous operation related with a specific entity',
+          () => {
+            expect(communication.starting('users', 'abc123')).toEqual({
+              type: 'communication/users/STARTING',
+              meta: {
+                type: 'users',
+                status: 'STARTING',
+                selector: 'abc123',
+              },
+            })
+          },
+        )
+      })
+    })
+
+    describe('cancel', () => {
+      describe('When only `type` is provided', () => {
+        it(
+          'should return an action that represents cancelation ' +
+            'of an asynchronous operation related with a entity group',
+          () => {
+            expect(communication.cancel('users')).toEqual({
+              type: 'communication/users/CANCEL',
+              meta: { type: 'users', status: 'CANCEL' },
+            })
+          },
+        )
+      })
+
+      describe('When `type` and `selector` are provided', () => {
+        it(
+          'should return an action that represents cancelation ' +
+            'of an asynchronous operation related with a specific entity',
+          () => {
+            expect(communication.cancel('users', 'abc123')).toEqual({
+              type: 'communication/users/CANCEL',
+              meta: {
+                type: 'users',
+                status: 'CANCEL',
+                selector: 'abc123',
+              },
+            })
+          },
+        )
+      })
+    })
+
+    describe('fail', () => {
+      describe('When only `type` is provided', () => {
+        it(
+          'should return an action that represents that some error occurred ' +
+            'during an asynchronous operation execution related with an entity group',
+          () => {
+            expect(communication.fail('users')).toEqual({
+              type: 'communication/users/FAIL',
+              meta: { type: 'users', status: 'FAIL' },
+            })
+          },
+        )
+      })
+
+      describe('When `type` and `error` are provided', () => {
+        it(
+          'should return an action that represents that some error occurred ' +
+            'during an asynchronous operation execution related with an entity group ' +
+            'with the error as its payload',
+          () => {
+            const error = new Error('Something went wrong!')
+            expect(communication.fail('users', error)).toEqual({
+              type: 'communication/users/FAIL',
+              payload: error,
+              error: true,
+              meta: { type: 'users', status: 'FAIL' },
+            })
+          },
+        )
+      })
+
+      describe('When `type`, `selector`, and `error` are provided', () => {
+        it(
+          'should return an action that represents that some error occurred ' +
+            'during an asynchronous operation execution related with an entity item ' +
+            'with the error as its payload',
+          () => {
+            const error = new Error('Something went wrong!')
+            expect(communication.fail('users', 'abc123', error)).toEqual({
+              type: 'communication/users/FAIL',
+              payload: error,
+              error: true,
+              meta: {
+                type: 'users',
+                selector: 'abc123',
+                status: 'FAIL',
+              },
+            })
+          },
+        )
+      })
+    })
+
+    describe('done', () => {
+      describe('When only `type` is provided', () => {
+        it(
+          'should return an action that represents the end ' +
+            'of an asynchronous operation related with a entity group',
+          () => {
+            expect(communication.done('users')).toEqual({
+              type: 'communication/users/DONE',
+              meta: { type: 'users', status: 'DONE' },
+            })
+          },
+        )
+      })
+
+      describe('When `type` and `selector` are provided', () => {
+        it(
+          'should return an action that represents the end ' +
+            'of an asynchronous operation related with a specific entity',
+          () => {
+            expect(communication.done('users', 'abc123')).toEqual({
+              type: 'communication/users/DONE',
+              meta: {
+                type: 'users',
+                status: 'DONE',
+                selector: 'abc123',
+              },
+            })
+          },
+        )
+      })
+    })
   })
 
-  describe('when dispatching starting communication action', () => {
-    beforeEach(() => {
-      action = communication.starting(type)
-      state = communication(undefined, action)
-    })
-
-    it('should return type communication/{type}/STARTING', () => {
-      expect(action.type).toEqual(`communication/${type}/STARTING`)
-    })
-
-    it('should return meta status STARTING', () => {
-      expect(action.meta.status).toBe('STARTING')
-    })
-
-    it(`should return meta type ${type}`, () => {
-      expect(action.meta.type).toBe(type)
-    })
-
-    it(`should set status to communication state.${type}`, () => {
-      expect(state.users).toEqual({ status: 'STARTING' })
-    })
-
-    describe('given a selector', () => {
-      beforeEach(() => {
-        selector = 'userId'
-        action = communication.starting(type, selector)
-        state = communication(undefined, action)
-      })
-
-      it('should return given meta selector', () => {
-        expect(action.meta.selector).toEqual(selector)
-      })
-
-      it(`should set status to communication state[${type}:${selector}]`, () => {
-        expect(state[`${type}:${selector}`]).toEqual({ status: 'STARTING' })
+  describe('Reducer', () => {
+    describe('On state initialization', () => {
+      it('should initialize state as empty object', () => {
+        const state = communication.reducer(undefined, { type: '@@INIT' })
+        expect(state).toEqual({})
       })
     })
-  })
 
-  describe('when dispatching cancel communication action', () => {
-    beforeEach(() => {
-      action = communication.cancel(type)
-      state = communication(
-        {
+    describe('When action provided does not represent communication tasks', () => {
+      it('should return current state', () => {
+        const currentState = {
           users: { status: 'STARTING' },
-        },
-        action,
-      )
-    })
-
-    it('should return type communication/{type}/CANCEL', () => {
-      expect(action.type).toEqual(`communication/${type}/CANCEL`)
-    })
-
-    it('should return meta status CANCEL', () => {
-      expect(action.meta.status).toBe('CANCEL')
-    })
-
-    it(`should return meta type ${type}`, () => {
-      expect(action.meta.type).toBe(type)
-    })
-
-    it(`should remove state.${type}`, () => {
-      expect(state.users).toBeUndefined()
-    })
-
-    describe('given a selector', () => {
-      beforeEach(() => {
-        selector = 'userId'
-        action = communication.cancel(type, selector)
-        state = communication(
-          {
-            [`users:${selector}`]: { status: 'STARTING' },
-          },
-          action,
-        )
-      })
-
-      it('should return given meta selector', () => {
-        expect(action.meta.selector).toEqual(selector)
-      })
-
-      it(`should remove state[${type}:${selector}]`, () => {
-        expect(state.users).toBeUndefined()
+        }
+        const newState = communication.reducer(currentState, {
+          type: 'SOME_ACTION_TYPE',
+        })
+        expect(newState).toBe(currentState)
       })
     })
-  })
 
-  describe('when dispatching done communication action', () => {
-    beforeEach(() => {
-      action = communication.done(type)
-      state = communication(
-        {
+    describe('When entity action provided is not associated with a status', () => {
+      it('should return current state', () => {
+        const currentState = {
           users: { status: 'STARTING' },
-        },
-        action,
-      )
-    })
-
-    it('should return type communication/{type}/DONE', () => {
-      expect(action.type).toEqual(`communication/${type}/DONE`)
-    })
-
-    it('should return meta status DONE', () => {
-      expect(action.meta.status).toBe('DONE')
-    })
-
-    it(`should return meta type ${type}`, () => {
-      expect(action.meta.type).toBe(type)
-    })
-
-    it(`should remove state.${type}`, () => {
-      expect(state.users).toBeUndefined()
-    })
-
-    describe('given a selector', () => {
-      beforeEach(() => {
-        selector = 'userId'
-        action = communication.done(type, selector)
-        state = communication(
-          {
-            [`users:${selector}`]: { status: 'STARTING' },
-          },
-          action,
-        )
-      })
-
-      it('should return given meta selector', () => {
-        expect(action.meta.selector).toEqual(selector)
-      })
-
-      it(`should remove state[${type}:${selector}]`, () => {
-        expect(state.users).toBeUndefined()
-      })
-    })
-  })
-
-  describe('when dispatching fail communication action', () => {
-    beforeEach(() => {
-      error = new Error('my mocked error')
-      action = communication.fail(type, error)
-      state = communication(undefined, action)
-    })
-
-    it('should return type communication/{type}/FAIL', () => {
-      expect(action.type).toEqual(`communication/${type}/FAIL`)
-    })
-
-    it('should return meta status FAIL', () => {
-      expect(action.meta.status).toBe('FAIL')
-    })
-
-    it(`should return meta type ${type}`, () => {
-      expect(action.meta.type).toBe(type)
-    })
-
-    it('should return payload with the error', () => {
-      expect(action.payload).toEqual(error)
-    })
-
-    it('should return action with error true', () => {
-      expect(action.error).toBeTruthy()
-    })
-
-    it(`should set status to communication state.${type}`, () => {
-      expect(state.users.status).toBe('FAIL')
-    })
-
-    it(`should set error to communication state.${type}`, () => {
-      expect(state.users.error).toBe(error)
-    })
-
-    describe('given a selector', () => {
-      beforeEach(() => {
-        selector = 'userId'
-        error = new Error('my mocked error')
-        action = communication.fail(type, selector, error)
-        state = communication(
-          {
-            [`users:${selector}`]: { status: 'STARTING' },
-          },
-          action,
-        )
-      })
-
-      it('should return given meta selector', () => {
-        expect(action.meta.selector).toEqual(selector)
-      })
-
-      it(`should set status to communication state[${type}:${selector}]`, () => {
-        expect(state[`${type}:${selector}`].status).toBe('FAIL')
-      })
-
-      it(`should set error to communication state[${type}:${selector}]`, () => {
-        expect(state[`${type}:${selector}`].error).toBe(error)
+        }
+        const newState = communication.reducer(currentState, {
+          type: 'communication/users/STARTING',
+          meta: {},
+        })
+        expect(newState).toBe(currentState)
       })
     })
 
-    describe('given no error', () => {
-      beforeEach(() => {
-        action = communication.fail(type)
+    describe('When action provided represents communication tasks and it is associated with a status', () => {
+      describe('On starting an asynchronous operation', () => {
+        describe('When asynchronous operation is related with an entity group', () => {
+          it('should set communication state properly', () => {
+            const action = communication.starting('users')
+            const newState = communication.reducer({}, action)
+            expect(newState).toEqual({
+              users: { status: 'STARTING' },
+            })
+          })
+        })
+
+        describe('When asynchronous operation is related with an entity item', () => {
+          it('should set communication state properly', () => {
+            const action = communication.starting('users', 'abc123')
+            const newState = communication.reducer({}, action)
+            expect(newState).toEqual({
+              'users:abc123': { status: 'STARTING' },
+            })
+          })
+        })
       })
 
-      it('should return payload undefined', () => {
-        expect(action.payload).toBeUndefined()
+      describe('On canceling an asynchronous operation', () => {
+        describe('When asynchronous operation is related with an entity group', () => {
+          it('should set communication state properly', () => {
+            const currentState = {
+              users: { status: 'STARTING' },
+            }
+            const action = communication.cancel('users')
+            const newState = communication.reducer(currentState, action)
+            expect(newState).toEqual({})
+          })
+        })
+
+        describe('When asynchronous operation is related with an entity item', () => {
+          it('should set communication state properly', () => {
+            const currentState = {
+              'users:abc123': { status: 'STARTING' },
+            }
+            const action = communication.cancel('users', 'abc123')
+            const newState = communication.reducer(currentState, action)
+            expect(newState).toEqual({})
+          })
+        })
+      })
+
+      describe('On completing an asynchronous operation', () => {
+        describe('When asynchronous operation is related with an entity group', () => {
+          it('should set communication state properly', () => {
+            const currentState = {
+              users: { status: 'STARTING' },
+            }
+            const action = communication.done('users')
+            const newState = communication.reducer(currentState, action)
+            expect(newState).toEqual({})
+          })
+        })
+
+        describe('When asynchronous operation is related with an entity item', () => {
+          it('should set communication state properly', () => {
+            const currentState = {
+              'users:abc123': { status: 'STARTING' },
+            }
+            const action = communication.done('users', 'abc123')
+            const newState = communication.reducer(currentState, action)
+            expect(newState).toEqual({})
+          })
+        })
+      })
+
+      describe('On failing an asynchronous operation', () => {
+        describe('When asynchronous operation is related with an entity group', () => {
+          it('should set communication state properly', () => {
+            const currentState = {
+              users: { status: 'STARTING' },
+            }
+            const error = new Error('Something went wrong!')
+            const action = communication.fail('users', error)
+            const newState = communication.reducer(currentState, action)
+            expect(newState).toEqual({
+              users: {
+                status: 'FAIL',
+                error,
+              },
+            })
+          })
+        })
+
+        describe('When asynchronous operation is related with an entity item', () => {
+          it('should set communication state properly', () => {
+            const currentState = {
+              'users:abc123': { status: 'STARTING' },
+            }
+            const error = new Error('Something went wrong!')
+            const action = communication.fail('users', 'abc123', error)
+            const newState = communication.reducer(currentState, action)
+            expect(newState).toEqual({
+              'users:abc123': {
+                status: 'FAIL',
+                error,
+              },
+            })
+          })
+        })
       })
     })
-  })
 
-  describe('given init action', () => {
-    let initialState
-
-    describe('given init action with state provided', () => {
-      beforeEach(() => {
-        initialState = communication(
-          {
-            users: { status: 'STARTING' },
-          },
-          { type: '@@INIT' },
-        )
-      })
-
-      it('should return `of` function on initial state', () => {
-        expect(initialState.of).toBeInstanceOf(Function)
-      })
-    })
-
-    describe('given init action with empty state', () => {
-      beforeEach(() => {
-        initialState = communication(undefined, { type: '@@INIT' })
-      })
-
-      it('should return `of` function on initial state', () => {
-        expect(initialState.of).toBeInstanceOf(Function)
-      })
-    })
-  })
-
-  describe('given an action that do not starts with "communication"', () => {
-    it('should keep state unchanged', () => {
-      const curentState = { of() {} }
-      expect(communication(curentState, { type: 'NOT_HANDLED' })).toEqual(
-        curentState,
-      )
-    })
-  })
-
-  describe('given an action that has an invalid status', () => {
-    it('should keep state unchanged', () => {
-      const curentState = {}
-      expect(
-        communication(curentState, {
-          type: 'communication/users/INVALID_STATUS',
+    describe('When an unknown communication action is provided', () => {
+      it('should return current state', () => {
+        const currentState = {}
+        const action = {
+          type: 'communication/UNKNOWN_ACTION_TYPE',
           meta: {
-            type: 'users',
-            status: 'INVALID_STATUS',
+            type: 'UNKNOWN_ACTION_TYPE',
+            status: 'UNKNOWN',
           },
-        }),
-      ).toBe(curentState)
-    })
-  })
-})
-
-describe('communication.of', () => {
-  let action
-  let state
-
-  describe('when there is a not-yet complete request', () => {
-    beforeEach(() => {
-      action = communication.starting('users')
-      state = communication(undefined, action)
-    })
-
-    it('should return loading true', () => {
-      expect(state.of('users').loading).toBeTruthy()
-    })
-
-    it('should return error undefined', () => {
-      expect(state.of('users').error).toBeUndefined()
-    })
-
-    describe('given a selector', () => {
-      beforeEach(() => {
-        action = communication.starting('users', 'userA')
-        state = communication(undefined, action)
-      })
-
-      it('should return loading true', () => {
-        expect(state.of('users', 'userA').loading).toBeTruthy()
-      })
-
-      it('should return error undefined', () => {
-        expect(state.of('users', 'userA').error).toBeUndefined()
-      })
-    })
-  })
-
-  describe("when there isn't a not-yet complete request", () => {
-    beforeEach(() => {
-      state = communication(undefined, action)
-    })
-
-    it('should return loading false', () => {
-      expect(state.of('users').loading).toBeFalsy()
-    })
-
-    it('should return error undefined', () => {
-      expect(state.of('users').error).toBeUndefined()
-    })
-
-    describe('given a selector', () => {
-      beforeEach(() => {
-        state = communication(undefined, action)
-      })
-
-      it('should return loading false', () => {
-        expect(state.of('users').loading).toBeFalsy()
-      })
-
-      it('should return error undefined', () => {
-        expect(state.of('users').error).toBeUndefined()
-      })
-    })
-  })
-
-  describe('when there is a failed request', () => {
-    let error
-    beforeEach(() => {
-      error = new Error('Somthing wrong happened')
-      action = communication.fail('users', error)
-      state = communication(undefined, action)
-    })
-
-    it('should return loading false', () => {
-      expect(state.of('users').loading).toBeFalsy()
-    })
-
-    it('should return the error', () => {
-      expect(state.of('users').error).toEqual(
-        new Error('Somthing wrong happened'),
-      )
-    })
-
-    describe('given a selector', () => {
-      beforeEach(() => {
-        error = new Error('Somthing wrong happened')
-        action = communication.fail('users', 'userA', error)
-        state = communication(undefined, action)
-      })
-
-      it('should return loading false', () => {
-        expect(state.of('users', 'userA').loading).toBeFalsy()
-      })
-
-      it('should return error undefined', () => {
-        expect(state.of('users', 'userA').error).toEqual(
-          new Error('Somthing wrong happened'),
-        )
+        }
+        const newState = communication.reducer(currentState, action)
+        expect(newState).toBe(currentState)
       })
     })
   })
