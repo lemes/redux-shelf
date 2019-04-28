@@ -1,12 +1,17 @@
 {
   "name": "redux-shelf",
   "version": "0.0.9",
-  "module": "dist/redux-shelf.es.js",
-  "main": "dist/redux-helf.es.js",
+  "main": "cjs/redux-shelf.js",
+  "module": "es/redux-shelf.js",
+  "browser": "dist/redux-shelf.js",
   "description": "Helper reducers and actions to take away your boilerplate code from both Data and Communication state types",
   "scripts": {
     "dev": "rollup -c -w",
-    "build": "rollup -c",
+    "build:cjs": "cross-env NODE_ENV=cjs rollup -c -o cjs/redux-shelf.js",
+    "build:es": "cross-env BABEL_ENV=es NODE_ENV=es rollup -c -o es/redux-shelf.js",
+    "build:umd": "cross-env BABEL_ENV=es NODE_ENV=development rollup -c -o dist/redux-shelf.js",
+    "build:umd:min": "cross-env BABEL_ENV=es NODE_ENV=production rollup -c -o dist/redux-shelf.min.js",
+    "build": "npm run build:cjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "test": "jest",
     "format": "prettier --write {src,test}/**/*.js",
     "precommit": "pretty-quick --staged",
@@ -29,6 +34,7 @@
     "@babel/plugin-transform-spread": "7.2.2",
     "@babel/preset-env": "7.4.3",
     "babel-jest": "24.7.1",
+    "cross-env": "5.2.0",
     "eslint": "5.16.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-config-prettier": "4.1.0",
@@ -44,8 +50,10 @@
     "rollup": "1.10.1",
     "rollup-plugin-analyzer": "3.0.0",
     "rollup-plugin-babel": "4.3.2",
+    "rollup-plugin-cleaner": "0.2.0",
     "rollup-plugin-commonjs": "9.3.4",
-    "rollup-plugin-node-resolve": "4.2.3"
+    "rollup-plugin-node-resolve": "4.2.3",
+    "rollup-plugin-uglify": "6.0.2"
   },
   "peerDependencies": {
     "normalizr": "3.3.0"
