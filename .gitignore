@@ -2,7 +2,7 @@
 *.log
 node_modules
 dist
-lib
+cjs
 es
 coverage
 _book
